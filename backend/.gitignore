@@ -1,0 +1,48 @@
+# === Node Modules ===
+/node_modules/
+
+# === Environment Variables ===
+.env .env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# === Build Output ===
+/public/
+/build/
+/dist/
+
+# === Logs ===
+/npm-debug.log*
+
+# === OS & Editor Files ===
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.swn
+*.tmp
+*.log
+
+# === IDEs ===
+.vscode/
+.idea/
+
+# === Miscellaneous ===
+.env
+*.env.local
+*.env.development
+*.env.test
+*.env.production
+
+# === Optional: PM2 logs or runtime files ===
+pids
+*.pid
+*.seed
+*.log
+
+# === Optional: Coverage reports ===
+/coverage
+
+# === Optional: ESLint cache ===
+/.eslintcache
