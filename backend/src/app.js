@@ -28,14 +28,14 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 // Routers
 app.use("/api/invoices", invoiceRouter);
 
-// // routes within our production build, handled by react router if any.
-// app.get(/.*/, (req, res) => {
-//   res.sendFile(path.join(__dirname, "..", "public", "index.html"));
-// });
+// routes within our production build, handled by react router if any.
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
+});
 
-// // a 404 response for any unhandled routes
-// app.use((req, res) => {
-//   res.status(404).json({ error: "Not Found" });
-// });
+// a 404 response for any unhandled routes
+app.use((req, res) => {
+  res.status(404).json({ error: "Not Found" });
+});
 
 export default app;
