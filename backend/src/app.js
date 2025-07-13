@@ -22,11 +22,11 @@ app.use(
 // parsing incoming request to json and populating req.body in json format
 app.use(express.json());
 
-// serve production ready react frontend using express
-app.use(express.static(path.join(__dirname, "..", "public")));
-
 // Routers
 app.use("/api/invoices", fbrRouter);
+
+// serve production ready react frontend using express
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 // routes within our production build, handled by react router if any.
 app.get(/.*/, (req, res) => {
