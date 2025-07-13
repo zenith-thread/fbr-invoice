@@ -1,28 +1,30 @@
+// src/store/invoice/invoice.asyncThunks.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-// Api functions
-import { createInvoice, getAllInvoices } from "../../api/invoices";
+// swap out old imports…
+import { postFbrInvoice, getFbrInvoices } from "../../api/fbr";
 
 export const createInvoiceAsync = createAsyncThunk(
   "invoice/createInvoice",
-  async ({ invoice }, { rejectWithValues }) => {
+  async ({ invoice }, { rejectWithValue }) => {
     try {
-      const invoiceResponse = await createInvoice(invoice);
-      return invoiceResponse;
+      const res = await postFbrInvoice(invoice);
+      return res; // { success: true, fbrResponse: { … } }
     } catch (err) {
-      return rejectWithValues(err.message);
+      return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
 
 export const getAllInvoicesAsync = createAsyncThunk(
   "invoice/getAllInvoices",
-  async ({ page, limit }, { rejectWithValues }) => {
+  async ({ page, limit }, { rejectWithValue }) => {
     try {
-      const response = await getAllInvoices(page, limit);
-      return response; // contains invoices, totalPages, currentPage, totalInvoices
+      const res = await getFbrInvoices({ page, limit });
+      // expect { invoices, totalPages, currentPage, totalInvoices }
+      return res;
     } catch (err) {
-      return rejectWithValues(err.message);
+      return rejectWithValue(err.response?.data || err.message);
     }
   }
 );

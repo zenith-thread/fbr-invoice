@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 
 // Routers
 import invoiceRouter from "./routes/invoice.route.js";
+import fbrRouter from "./routes/fbr.routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 
 // Routers
 app.use("/api/invoices", invoiceRouter);
+app.use("/api/fbr", fbrRouter);
 
 // routes within our production build, handled by react router if any.
 app.get(/.*/, (req, res) => {

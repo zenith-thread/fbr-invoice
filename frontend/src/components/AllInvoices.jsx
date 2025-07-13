@@ -1,120 +1,105 @@
-// components
-import Button from "./Button";
-
-// custom hooks
-import { useInvoice } from "../hooks/useInvoice";
+// src/components/AllInvoices.jsx
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Button from "./Button";
+import { useInvoice } from "../hooks/useInvoice";
 
 const AllInvoices = () => {
-  const [page, setPage] = useState(1);
-  const limit = 10;
+  const [limit] = useState(10);
 
   const {
     invoiceInvoices,
-    invoiceGetAllInvoicesAsync,
+    invoiceCurrentPage,
+    invoiceTotalPages,
+    invoiceTotalInvoices,
     invoiceLoadingGetInvoices,
     invoiceFailedGetInvoices,
-    invoiceTotalPages,
+    invoiceGetAllInvoicesAsync,
   } = useInvoice();
 
-  const showInvoicesHandler = () => {
-    invoiceGetAllInvoicesAsync();
-  };
-
-  const goToPage = (newPage) => {
-    if (newPage > 0 && newPage <= invoiceTotalPages) {
-      setPage(newPage);
-    }
-  };
-
+  // Fetch invoices when page or limit changes
   useEffect(() => {
-    invoiceGetAllInvoicesAsync(page, limit);
-  }, [page, limit]);
+    invoiceGetAllInvoicesAsync(invoiceCurrentPage, limit);
+  }, [invoiceCurrentPage, limit]);
+
+  // Show error toast if loading failed
   useEffect(() => {
     if (invoiceFailedGetInvoices) {
       toast.error("Failed to load invoices");
     }
   }, [invoiceFailedGetInvoices]);
 
+  const goToPage = (newPage) => {
+    if (newPage >= 1 && newPage <= invoiceTotalPages) {
+      invoiceGetAllInvoicesAsync(newPage, limit);
+    }
+  };
+
   return (
-    <div className="mx-auto max-w-[1600px]  my-[50px]">
-      <Button type="button" onClick={showInvoicesHandler}>
-        {invoiceLoadingGetInvoices ? "Loading..." : "Refresh"}
-      </Button>
-      <ul className="mt-[30px] overflow-x-auto scrollbar-thin">
-        <div className="flex w-full">
-          <span className="text-start p-4 border border-gray-700 bg-gray-800 text-white  min-w-[300px]">
-            Invoice Number
-          </span>
-          <span className="text-start p-4 border border-gray-700 bg-gray-800 text-white  min-w-[300px]">
-            Product Name
-          </span>
-          <span className="text-start p-4 border border-gray-700 bg-gray-800 text-white  min-w-[200px]">
-            Price
-          </span>
-          <span className="text-start p-4 border border-gray-700 bg-gray-800 text-white  min-w-[100px]">
-            GST
-          </span>
-          <span className="text-start p-4 border border-gray-700 bg-gray-800 text-white  min-w-[300px]">
-            Total
-          </span>
-          <span className="text-start p-4 border border-gray-700 bg-gray-800 text-white  min-w-[300px]">
-            Received At
-          </span>
-        </div>
-
-        {invoiceInvoices.length > 0 &&
-          invoiceInvoices.map(
-            ({
-              id,
-              invoiceNumber,
-              productName,
-              price,
-              gst,
-              total,
-              receivedAt,
-            }) => (
-              <li key={id} className="flex w-full">
-                <span className="text-start p-4 border border-gray-600 bg-gray-700 py-2 text-white min-w-[300px]">
-                  {invoiceNumber}
-                </span>
-                <span className="text-start p-4 border border-gray-600 bg-gray-700 py-2 text-white min-w-[300px]">
-                  {productName}
-                </span>
-                <span className="text-start p-4 border border-gray-600 bg-gray-700 py-2 text-white min-w-[200px]">
-                  {price}
-                </span>
-                <span className="text-start p-4 border border-gray-600 bg-gray-700 py-2 text-white min-w-[100px]">
-                  {gst}
-                </span>
-                <span className="text-start p-4 border border-gray-600 bg-gray-700 py-2 text-white min-w-[300px]">
-                  {total}
-                </span>
-                <span className="text-start p-4 border border-gray-600 bg-gray-700 py-2 text-white min-w-[300px]">
-                  {receivedAt.slice(0, 10)}
-                </span>
-              </li>
-            )
-          )}
-      </ul>
-
-      {/* Pagination Controls */}
-      <div className="mt-4 flex justify-center items-center">
+    <div className="mx-auto max-w-[1600px] my-[50px]">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-white text-2xl">FBR Sandbox Invoices</h2>
         <Button
-          type="button"
-          disabled={page === 1}
-          onClick={() => goToPage(page - 1)}
+          onClick={() => invoiceGetAllInvoicesAsync(invoiceCurrentPage, limit)}
+        >
+          {invoiceLoadingGetInvoices ? "Loading..." : "Refresh"}
+        </Button>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-gray-800 text-white">
+          <thead>
+            <tr>
+              <th className="px-4 py-2">Ref No</th>
+              <th className="px-4 py-2">Date</th>
+              <th className="px-4 py-2">Type</th>
+              <th className="px-4 py-2">Seller NTN</th>
+              <th className="px-4 py-2">Buyer NTN</th>
+              <th className="px-4 py-2"># Items</th>
+            </tr>
+          </thead>
+          <tbody>
+            {invoiceInvoices.map((inv) => (
+              <tr
+                key={inv.invoiceRefNo}
+                className="bg-gray-700 even:bg-gray-600"
+              >
+                <td className="border px-4 py-2">{inv.invoiceRefNo}</td>
+                <td className="border px-4 py-2">{inv.invoiceDate}</td>
+                <td className="border px-4 py-2">{inv.invoiceType}</td>
+                <td className="border px-4 py-2">{inv.sellerNTNCNIC}</td>
+                <td className="border px-4 py-2">{inv.buyerNTNCNIC}</td>
+                <td className="border px-4 py-2">{inv.items?.length ?? 0}</td>
+              </tr>
+            ))}
+            {invoiceInvoices.length === 0 && !invoiceLoadingGetInvoices && (
+              <tr>
+                <td colSpan={6} className="text-center px-4 py-6 text-gray-400">
+                  No invoices found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="mt-4 flex justify-center items-center space-x-4">
+        <Button
+          onClick={() => goToPage(invoiceCurrentPage - 1)}
+          disabled={invoiceCurrentPage === 1}
         >
           Previous
         </Button>
-        <span className="mx-2 text-white text-xl font-medium px-4">
-          Page {page} of {invoiceTotalPages}
+        <span className="text-white">
+          Page {invoiceCurrentPage} of {invoiceTotalPages} — showing{" "}
+          {Math.min((invoiceCurrentPage - 1) * limit + 1, invoiceTotalInvoices)}{" "}
+          to {Math.min(invoiceCurrentPage * limit, invoiceTotalInvoices)} of{" "}
+          {invoiceTotalInvoices}
         </span>
         <Button
-          type="button"
-          disabled={page === invoiceTotalPages}
-          onClick={() => goToPage(page + 1)}
+          onClick={() => goToPage(invoiceCurrentPage + 1)}
+          disabled={invoiceCurrentPage === invoiceTotalPages}
         >
           Next
         </Button>
