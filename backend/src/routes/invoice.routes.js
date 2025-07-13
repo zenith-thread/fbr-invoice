@@ -8,7 +8,7 @@ import {
 const fbrRouter = express.Router();
 
 // POST /api/fbr/invoices
-fbrRouter.post("/invoices", async (req, res) => {
+fbrRouter.post("/", async (req, res) => {
   try {
     const invoiceData = req.body;
     const fbrResponse = await postInvoiceToFbr(invoiceData);
@@ -23,7 +23,7 @@ fbrRouter.post("/invoices", async (req, res) => {
 });
 
 // POST /api/fbr/invoices/validate
-fbrRouter.post("/invoices/validate", async (req, res) => {
+fbrRouter.post("/validate", async (req, res) => {
   try {
     const validationPayload = req.body;
     const fbrResponse = await validateInvoiceWithFbr(validationPayload);
