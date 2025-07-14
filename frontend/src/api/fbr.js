@@ -12,7 +12,7 @@ const api = axios.create({
  * Submit an invoice to FBR sandbox
  */
 export const postFbrInvoice = async (invoicePayload) => {
-  const { data } = await api.post("/api/invoices", invoicePayload);
+  const { data } = await api.post("/invoices", invoicePayload);
   return data;
 };
 
@@ -20,7 +20,7 @@ export const postFbrInvoice = async (invoicePayload) => {
  * Validate an existing invoice in FBR sandbox
  */
 export const validateFbrInvoice = async (validationPayload) => {
-  const { data } = await api.post("/api/invoices/validate", validationPayload);
+  const { data } = await api.post("/invoices/validate", validationPayload);
   return data;
 };
 
@@ -28,7 +28,7 @@ export const validateFbrInvoice = async (validationPayload) => {
  * Fetch paginated FBR invoices from your backend store
  */
 export const getFbrInvoices = async ({ page, limit }) => {
-  const { data } = await api.get("/api/invoices", {
+  const { data } = await api.get("/invoices", {
     params: { page, limit },
   });
   return data;
