@@ -12,6 +12,8 @@ const api = axios.create({
  * Submit an invoice to FBR sandbox
  */
 export const postFbrInvoice = async (invoicePayload) => {
+  console.log("Base URL:", api.defaults.baseURL);
+  console.log("Posting to:", api.defaults.baseURL + "/invoices");
   const { data } = await api.post("/invoices", invoicePayload);
   return data;
 };
